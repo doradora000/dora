@@ -2,6 +2,16 @@
 
 <head>
     <style>
+        :root {
+            --red1: hsl(345, 100%, 48%);
+            --red2: hsl(345, 100%, 38%);
+            --white1: hsl(0, 0%, 100%);
+            --white2: hsl(0, 0%, 90%);
+            --white3: hsl(141, 61%, 35%);
+            --white4: hsl(141, 61%, 40%);
+            font-size: calc(16px + (20 - 16) * (100vw - 320px) / (1280 - 320));
+        }
+
         .bg {
             width: 100%;
             height: 100%;
@@ -24,12 +34,480 @@
             border: 12px solid white;
         }
 
+        .gift {
+            --dur: 1.5s;
+            position: relative;
+            width: 18em;
+            height: 18em;
+        }
+
+        .gift__bow,
+        .gift__bow-center,
+        .gift__bow-left,
+        .gift__bow-right,
+        .gift__box,
+        .gift__lid,
+        .gift__lid-shadow,
+        .gift__star {
+            position: absolute;
+        }
+
+        .gift__bow-center,
+        .gift__bow-left,
+        .gift__bow-right {
+            background-color: var(--red2);
+        }
+
+        .gift__bow {
+            animation: bowBounce var(--dur) ease-in-out infinite;
+            bottom: 11em;
+            left: 7.5em;
+            width: 3em;
+            height: 2em;
+            transform-origin: 50% 230%;
+        }
+
+        .gift__bow-center {
+            border-radius: 1em;
+            width: 100%;
+            height: 100%;
+        }
+
+        .gift__bow-left,
+        .gift__bow-right {
+            box-shadow: 0 0 0 0.7em var(--red1) inset;
+            top: 0.3em;
+            width: 4em;
+            height: 5em;
+            z-index: -1;
+        }
+
+        .gift__bow-left:before,
+        .gift__bow-right:before {
+            background-color: var(--red1);
+            border-radius: inherit;
+            content: "";
+            display: block;
+            position: absolute;
+            inset: 0;
+        }
+
+        .gift__bow-left {
+            animation: bowLeftPivot var(--dur) ease-in-out infinite;
+            border-radius: 1.5em 0 3em 1em / 1.5em 0 3em 3.5em;
+            right: calc(100% - 0.75em);
+            transform: rotate(35deg);
+            transform-origin: 100% 15%;
+        }
+
+        .gift__bow-left:before {
+            clip-path: polygon(0 42%, 100% 12%, 100% 100%, 0 100%);
+        }
+
+        .gift__bow-right {
+            animation: bowRightPivot var(--dur) ease-in-out infinite;
+            border-radius: 0 1.5em 1em 3em / 0 1.5em 3.5em 3em;
+            left: calc(100% - 0.75em);
+            transform: rotate(-35deg);
+            transform-origin: 0% 15%;
+        }
+
+        .gift__bow-right:before {
+            clip-path: polygon(0 12%, 100% 42%, 100% 100%, 0 100%);
+        }
+
+        .gift__box,
+        .gift__lid,
+        .gift__lid-shadow {
+            transform-origin: 50% 100%;
+        }
+
+        .gift__box {
+            animation: boxBounce var(--dur) ease-in-out infinite;
+            background:
+                linear-gradient(var(--red2), var(--red2)) 50% 50% / 3.3em 100% no-repeat,
+                var(--white4);
+            border-radius: 1.5em;
+            bottom: 0.5em;
+            left: 3.3em;
+            overflow: hidden;
+            width: 11.4em;
+            height: 9em;
+        }
+
+        .gift__lid,
+        .gift__lid-shadow {
+            border-radius: 1em;
+            width: 13em;
+            height: 3.3em;
+        }
+
+        .gift__lid {
+            animation: lidBounce var(--dur) ease-in-out infinite;
+            background:
+                linear-gradient(var(--red1), var(--red1)) 50% 50% / 3.3em 100% no-repeat,
+                var(--white3);
+            bottom: 8.7em;
+            left: 2.5em;
+        }
+
+        .gift__lid-shadow {
+            animation: lidShadowBounce var(--dur) ease-in-out infinite;
+            background-color: hsla(0, 0%, 0%, 0.1);
+            top: -1.5em;
+            left: -1em;
+        }
+
+        .gift__star {
+            animation: starRotateCW var(--dur) ease-in infinite;
+            background-color: var(--white1);
+            clip-path: polygon(50% 0, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0 50%, 35% 35%);
+            transform: scale(0);
+        }
+
+        .gift__star--2,
+        .gift__star--4,
+        .gift__star--5 {
+            animation-name: starRotateCCW;
+        }
+
+        .gift__star--1 {
+            animation-delay: calc(var(--dur) * 0.5);
+            top: 0;
+            left: 12.5em;
+            width: 1.5em;
+            height: 1.5em;
+        }
+
+        .gift__star--2 {
+            animation-delay: calc(var(--dur) * 0.125);
+            top: 2em;
+            left: 10em;
+            width: 1.75em;
+            height: 1.75em;
+        }
+
+        .gift__star--3 {
+            animation-delay: calc(var(--dur) * 0.25);
+            top: 8em;
+            left: 0;
+            width: 1.25em;
+            height: 1.25em;
+        }
+
+        .gift__star--4 {
+            top: 10.5em;
+            right: 0;
+            width: 1.75em;
+            height: 1.75em;
+        }
+
+        .gift__star--5 {
+            animation-delay: calc(var(--dur) * 0.375);
+            top: 12em;
+            left: 1.8em;
+            width: 2.5em;
+            height: 2.5em;
+        }
+
+        /* Animations */
+        @keyframes bowBounce {
+
+            from,
+            50% {
+                transform: translateY(0) rotate(0);
+            }
+
+            62.5% {
+                animation-timing-function: ease-in;
+                transform: translateY(75%) rotate(0);
+            }
+
+            68.75% {
+                animation-timing-function: ease-out;
+                transform: translateY(-37.5%) rotate(15deg);
+            }
+
+            75% {
+                animation-timing-function: ease-in-out;
+                transform: translateY(-150%) rotate(5deg);
+            }
+
+            87.5% {
+                transform: translateY(65%) rotate(-3deg);
+            }
+
+            to {
+                transform: translateY(0) rotate(0);
+            }
+        }
+
+        @keyframes bowLeftPivot {
+
+            from,
+            50% {
+                transform: rotate(35deg);
+            }
+
+            62.5% {
+                transform: rotate(45deg);
+            }
+
+            75% {
+                transform: rotate(30deg);
+            }
+
+            87.5% {
+                transform: rotate(45deg);
+            }
+
+            to {
+                transform: rotate(35deg);
+            }
+        }
+
+        @keyframes bowRightPivot {
+
+            from,
+            50% {
+                transform: rotate(-35deg);
+            }
+
+            62.5% {
+                transform: rotate(-45deg);
+            }
+
+            75% {
+                transform: rotate(-34deg);
+            }
+
+            87.5% {
+                transform: rotate(-45deg);
+            }
+
+            to {
+                transform: rotate(-35deg);
+            }
+        }
+
+        @keyframes boxBounce {
+
+            from,
+            50% {
+                transform: translateY(0) scale(1, 1);
+            }
+
+            62.5% {
+                transform: translateY(4%) scale(1.12, 0.89);
+            }
+
+            75% {
+                transform: translateY(-11%) scale(0.92, 1.1);
+            }
+
+            87.5% {
+                transform: translateY(0) scale(1.05, 0.9);
+            }
+
+            to {
+                transform: translateY(0) scale(1, 1);
+            }
+        }
+
+        @keyframes lidBounce {
+
+            from,
+            50% {
+                transform: translateY(0) scale(1, 1) rotate(0);
+            }
+
+            62.5% {
+                animation-timing-function: ease-in;
+                transform: translateY(45%) scale(1.14, 0.95) rotate(0);
+            }
+
+            68.75% {
+                animation-timing-function: ease-out;
+                transform: translateY(-22.5%) scale(1.05, 1.03) rotate(15deg);
+            }
+
+            75% {
+                animation-timing-function: ease-in-out;
+                transform: translateY(-90%) scale(0.96, 1.1) rotate(5deg);
+            }
+
+            87.5% {
+                transform: translateY(30%) scale(1.12, 0.93) rotate(-3deg);
+            }
+
+            to {
+                transform: translateY(0) scale(1, 1) rotate(0);
+            }
+        }
+
+        @keyframes lidShadowBounce {
+
+            from,
+            50% {
+                transform: translateY(0) scale(1, 1) rotate(0);
+            }
+
+            62.5% {
+                animation-timing-function: ease-in;
+                transform: translateY(10%) scale(1.14, 0.95) rotate(0);
+            }
+
+            68.75% {
+                animation-timing-function: ease-out;
+                transform: translateY(-10%) scale(1.05, 1.03) rotate(15deg);
+            }
+
+            75% {
+                animation-timing-function: ease-in-out;
+                transform: translateY(-30%) scale(0.96, 1.1) rotate(5deg);
+            }
+
+            87.5% {
+                transform: translateY(10%) scale(1.12, 0.93) rotate(-3deg);
+            }
+
+            to {
+                transform: translateY(0) scale(1, 1) rotate(0);
+            }
+        }
+
+        @keyframes starRotateCW {
+            from {
+                transform: scale(0) rotate(0);
+            }
+
+            25% {
+                animation-timing-function: ease-out;
+                transform: scale(1) rotate(0.25turn);
+            }
+
+            50%,
+            to {
+                transform: scale(0) rotate(0.5turn);
+            }
+        }
+
+        @keyframes starRotateCCW {
+            from {
+                transform: scale(0) rotate(0);
+            }
+
+            25% {
+                animation-timing-function: ease-out;
+                transform: scale(1) rotate(-0.25turn);
+            }
+
+            50%,
+            to {
+                transform: scale(0) rotate(-0.5turn);
+            }
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .button {
+            display: inline-block;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            min-width: 100px;
+            padding: 22px 33px;
+            font-family: 'Lobster', cursive;
+            font-size: 26px;
+            line-height: 26px;
+            text-decoration: none;
+            color: #FFF;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+            background: #5e0d0c;
+            outline: none;
+            border-radius: 15px;
+            border: 1px solid #4c0300;
+            box-shadow:
+                inset 1px 1px 0px rgba(255, 255, 255, 0.25),
+                /* highlight */
+                inset 0 0 6px #a23227,
+                /* inner glow */
+                inset 0 80px 80px -40px #ac3223,
+                /* gradient */
+                1px 1px 3px rgba(0, 0, 0, 0.75);
+            /* shadow */
+            position: relative;
+            overflow: visible;
+            /* IE9 & 10 */
+            -webkit-transition: 500ms linear;
+            -moz-transition: 500ms linear;
+            -o-transition: 500ms linear;
+            transition: 500ms linear;
+        }
+
+        .button::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: -7px;
+            left: -3px;
+            right: 0;
+            height: 23px;
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAAAXCAYAAACS5bYWAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABFpJREFUeNrUV0tIo1cUvpkYjQ4xxSA6DxuNqG0dtaUKOgs3s6i0dFd3pSsXdjeIixakiGA34sZuXCkoONLFwJTK4GMYLYXg29gatTpiXurkbd7vv9/5ub+IxuhA7eiFQ5Kbc8/57ne/e87/ywRBYLdl3GG3aNwqsLJ0k0tLS+fmcnNzWUVFBVMoFGx2djarvLxcm5OTw+bm5iytra2xc4ExNjY27iqVyvvwK6CpeDzuCYVC1urq6qDA9UcfPp+PHR4esmAwKK6tr68/l5/8rgQ2Ozub1dbWyiYmJooaGxt/VqvV38jlchX9l0qlwoFA4DWS/RKLxRxFRUVf5+XlPcaaT2AP0sVPJBL2SCRiAPBpu93+vKamZo/Ae71eZjabWV1dXVqw7CKwp43ksrCw8Bhg7MJ/PLDZ5PHx8cz29vYT5JGD/bSYLgTrcDgYdk6siSc6NjZWDaAe4ZoHQL+cmZnRpZPnhWDpD8kw7uKo9ML/NMCsd2tr61vkzboMrEyv138M7TyLRqMWMBsX3sMgaZhMpp+AR5EJrCocDpuEGzKg4x8khs+CVWxubvZfR9JkMik4nU7BarUKLpeLmLsKuwIqTLynp4fqmIzASrqQT09Pf1VVVfX0KsWZ6uHBwQHTaDSsoKAgo6/H4xHLEcrVyRwuEisrKzs5XrrIVAVwiUVDKRRrL+YI32ewdVhMApuHWvcj6vids6J2u90MF4yBHUZNgKoEBaRBQalJqFSqtJfUYrGIlQX+ydXVVTN+u0tKSjQNDQ1axJVl2iTypebn55d7e3v/kqoDgZU1NTU9LCws/Py0M+2ekuGincxJ3yF+18jIyHJLS0slQJUWFxczrBeBE0vE5tHRkbixlZWVfSR8gTX/0P5gH7S1tX3Z3t7+BW8qAvwSfr8/jA0EIRM/qoFtampqbW9vTw+XA+ojUruVd3Z2tvb19T2TQFEim81GgVJoCvvj4+NLOJZgaWmpemdn5y3a6BbcnJDAw8HBwac6ne6eqCW5XDwB3qVSqM9/DAwMUNy/eVLabT7sI25qwgujThCBhWE+mAt2yNc4SQKSZrOQQE1HS22VJkmPAGTr7+//fX19fRk+Zgq0trbGeFAKEAQT98BSqKOj47vm5uaa/Px8JeIk4GcaHh6eWlxcfAU/A8xG67BxAX3fwdcbYUpSDJ06Z49Ak8ZC3OL8f3YiA4PBYKdLQ2AJ9OTk5GpXV9cQiCVh79M94QtlPLDUE/1gPNrd3f0W33W4cBoco48zQuy/IZYAMnGqlSc4c66L9JruQUaSARXeT8HGKzxAqFBekni6+h46+pMzGiJGMgTOJh1yU/KNEGDvZWvfBawkA9ppwGg0mrRa7SOI2g+gxOgbJIpdFpj72PnxSnPX8vqRxTURgBQWKisrH+GThOm+CtAzoK/9/Uiqq/6hoaHfdnd3jaOjo7/yY7yxbwqkWy3sQzpS2C6YirwvUJk0y7hurfyGRrnduPGvAAMASmo8wzeVwfsAAAAASUVORK5CYII=) no-repeat 0 0,
+                url(data:image/png;base64,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) no-repeat 50% 0,
+                url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAXCAYAAACFxybfAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAodJREFUeNrsVb1rWlEUv2pN/GqspKRSKFYXWzEloIWif0Fn6dJChQ7OQil0qd3EzcEpg0OgdHDr4CQODk7VRlLMEIVqApX4We0zflR9/Z1Ui4T34ksaaAYP/Hzc673n/M6550PG8zz73yKjn0wm83fDYDAwo9HINBrNnwOQg4MDs0ql2lQqlfdAWont7ng8Pjw+Ps44nc4G1pI9EXWaSOzt7TGO42aH5Pv7+08ajUZ0MBiUeXEZd7vdL5VK5fX29rZ+5tQiEmdxKrlcjsEYczgcynK5/BKKv/IXFNz/XiqVXkHdjUuRIA9SqdRD8or/R8Ez9fr9fqHVakUR4c2z0REjIQuHw2ZcrPBXLCA0RHTezEdHjIQqkUhEr9I4HOILhQLf6/VoOUFEvDMiQiToDx1Cdz+bzZ6bUFarlel0OkkVUK/XWbvdPoVer5fh3ntsfwJ+CJ2XA4p0Op1bpBgJyxDehQQ6nQ5DZXHBYDBZq9V+EhFUndnr9drEqoc2bwJbwGPgtohuVSwWe2Gz2TZMJpNgRKi6qtUqg2EWj8dTgUDgo0KhWPN4PC70EvXOzs67fD6/S6kiRIKeZA1YJ2MiJNbdbvfTUCjkV6vVK2hcDF8GI2w0GrGTkxM2HA5PDxaLxSOfz/cWEfk81X0XIMMFgJJ/srBjCgk8IdcfuVyuZ36//7nFYtkQyAMumUzuRiKRD0jMFLa+AZOpYwqgB/ziBVqmVBKUO7eAB/R0WG/Z7XaTVqtdbTabHJL6EK2djBaBPHA0NSqpbUsiMUeEBgpF4Q5AbZrmSJ/yEWgBTaBNHl9kdkgmMUeG7qwAq9PqovceTA3zlxlgsuswyuXsGsiSxJLEkoSY/BZgAEjRodi+uBruAAAAAElFTkSuQmCC) no-repeat 100% 0;
+
+        }
+
+        .button:hover {
+            background: #a61715;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75), 0 0 40px #FFF;
+            box-shadow:
+                inset 1px 1px 0px rgba(255, 255, 255, 0.25),
+                /* highlight */
+                inset 0 0 6px #da3b2c,
+                /* inner glow */
+                inset 0 80px 80px -40px #dd4330,
+                /* gradient */
+                1px 1px 3px rgba(0, 0, 0, 0.75);
+            /* shadow */
+
+        }
+
+        .button:focus {
+            outline: none;
+            /*FF*/
+        }
+
+        .button:active {
+            box-shadow:
+                inset 1px 1px 0px rgba(255, 255, 255, 0.25),
+                /* highlight */
+                inset 0 0 6px #da3b2c,
+                /* inner glow */
+                inset 0 80px 80px -40px #dd4330,
+                /* gradient */
+                0px 1px 0px rgba(255, 255, 255, 0.25);
+            /* shadow */
+
+            -webkit-transition: 50ms linear;
+            -moz-transition: 50ms linear;
+            -o-transition: 50ms linear;
+            transition: 50ms linear;
+        }
+
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url("https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80 387w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80 687w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80 774w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80 987w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80 1287w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80 1374w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1587&q=80 1587w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1887&q=80 1887w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80 1974w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2187&q=80 2187w, https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2400&q=80 2400w");
+            background-image: url("https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80%20387w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80%20687w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80%20774w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80%20987w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80%201287w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80%201374w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1587&q=80%201587w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1887&q=80%201887w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80%201974w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2187&q=80%202187w,%20https://images.unsplash.com/photo-1529973625058-a665431328fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2400&q=80%202400w");
             background-color: #f1faee;
+            background-repeat: no-repeat;
+            /* Do not repeat the image */
+            background-size: cover;
+            /* Resize the background image to cover the entire container */
         }
 
         .christmas-card {
@@ -70,7 +548,7 @@
         .open {
             position: absolute;
             width: 770px;
-            height: 1200px;
+            height: 1000px;
             left: 0;
             top: 0;
             background-color: transparent;
@@ -413,6 +891,15 @@
             color: #ef233c;
         }
 
+        .text2 {
+            position: absolute;
+            font-family: 'Brush Script MT', cursive;
+            font-size: 110px;
+            top: 200px;
+            text-shadow: 1px 1px 1px white;
+            color: #f4db34;
+        }
+
         .fall {
             position: absolute;
             z-index: 15;
@@ -512,48 +999,101 @@
         <div class="card-front bg">
             <div class="snowball">
                 <div class="ball">
-                  <div class="fall">
-                    <div class="snowFlakes1"></div>
-                    <div class="snowFlakes2"></div>
-                    <div class="snowFlakes3"></div>
-                    <div class="snowFlakes4"></div>
-                    <div class="snowFlakes5"></div>
-                    <div class="snowFlakes6"></div>
-                    <div class="snowFlakes7"></div>
-                    <div class="snowFlakes8"></div>
-                    <div class="snowFlakes9"></div>
-                    <div class="snowFlakes10"></div>
-                  </div>
-                  <div class="tree">
-                    <div class="tree1"></div>
-                    <div class="tree2"></div>
-                    <div class="snow"></div>
-                    <div class="balls"></div>
-                    <div class="balls1"></div>
-                  </div>
-                  <div class="star"></div>
-                  <div class="star1"></div>
+                    <div class="fall">
+                        <div class="snowFlakes1"></div>
+                        <div class="snowFlakes2"></div>
+                        <div class="snowFlakes3"></div>
+                        <div class="snowFlakes4"></div>
+                        <div class="snowFlakes5"></div>
+                        <div class="snowFlakes6"></div>
+                        <div class="snowFlakes7"></div>
+                        <div class="snowFlakes8"></div>
+                        <div class="snowFlakes9"></div>
+                        <div class="snowFlakes10"></div>
+                    </div>
+                    <div class="tree">
+                        <div class="tree1"></div>
+                        <div class="tree2"></div>
+                        <div class="snow"></div>
+                        <div class="balls"></div>
+                        <div class="balls1"></div>
+                    </div>
+                    <div class="star"></div>
+                    <div class="star1"></div>
                 </div>
                 <div class="holder">
-                  <div class="text">Merry Christmas!</div>
+                    <div class="text">Merry Christmas!</div>
                 </div>
-                </div>
+            </div>
             <div class="christmas-tree"></div>
-            <div class="text">- Click to Open -</div>
+            <div class="text2">- To Dora -</div>
         </div>
 
         <div class="card-inside bg">
-            <div class="title">Merry</br>Christmas!</div>
-            <div class="wishes">I hope the magic of Christmas fills every corner of your heart and home with joy — now
-                and
-                always.</div>
-            <div class="gift">
-                <div class="bow"></div>
+            <div style="height: 1000px;width:700px;padding:20px;">
+                <p
+                    style="width: 100%;height:500px;font-size: 32px;text-shadow: 1px 1px 1px white;text-align: left;color: #f1faee;">
+                    親愛的張庭瑄：
+                    <br>
+                    &nbsp;&nbsp; 從7月認識你到現在，一開始以為妳是個小屁孩，
+                    還很愛跟我吵架，但妳總是會跟我分享你的生活，這些日子相處下來發現妳其實是一個很貼心也很獨立的小孩，脾氣也不錯只是愛假裝很兇，
+                    每次看到妳傷心難過我都會很捨不得，只能默默的陪著妳，還記得有一次你問我有過什麼遺憾的事情嗎
+                    ，當時覺得好像沒有，後來在12/19妳跟我吵架後，我覺得有件事情如果不跟妳說可能真的會有遺憾的感覺，
+                    雖然在什麼都沒準備的情況下已經先說了，但還是要給妳一個特別的
+                    今天是聖誕節我要送妳一個禮物，希望妳會喜歡
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                </p>
+                <div style="width: 700px;margin:auto;">
+                    <div style="position: relative; margin:auto;">
+                        <div class="gift" style="margin: auto;">
+                            <div class="gift__bow">
+                                <div class="gift__bow-left"></div>
+                                <div class="gift__bow-right"></div>
+                                <div class="gift__bow-center"></div>
+                            </div>
+                            <div class="gift__box"></div>
+                            <div class="gift__lid"></div>
+                            <div class="gift__star gift__star--1"></div>
+                            <div class="gift__star gift__star--2"></div>
+                            <div class="gift__star gift__star--3"></div>
+                            <div class="gift__star gift__star--4"></div>
+                            <div class="gift__star gift__star--5"></div>
+                        </div>
+
+                    </div>
+                    <div style="position: relative;width:700px;height: 100px;margin: auto;left: 270px;top: 20px;">
+                        <a href="#" class="button" onclick="opengift()">打開禮物</a>
+                    </div>
+                </div>
+            </div>
+            <div id="gift000" style="display:none;height: 300px;width: 270px;background-color:white;
+            position: absolute;top: 690px;border:15px solid #6a994e;">
+                <p style="font-size: 40px;text-align: center;">
+                    送你
+                    <br>
+                    一個涂家豪
+                    <br>
+                    當男朋友
+                    <br>
+                    請收下
+                </p>
             </div>
         </div>
     </div>
     <script>
+        var isopen = false;
 
+        function opengift() {
+            var modal = document.getElementById("gift000");
+            isopen = !isopen;
+            if (!isopen) modal.style.display = 'none';
+            else modal.style.display = "block";
+            console.log("送你我");
+        }
     </script>
 </body>
 
